@@ -2,12 +2,13 @@ import DaysSelected from "./DaysSelected"
 import styled from "styled-components"
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { Link, useNavigate } from 'react-router-dom';
 
-
-export default function AddHabits({showListHabits, setShowListHabits, token}){
+export default function AddHabits({ setShowAddHabits, token, setShowList, setShowAddText}){
 
     const [nameHabit, setNameHabit] = useState("");
     const [arrayDays, setArrayDays] = useState([]);
+    const navigate = useNavigate();
 
 
     function createHabits(e) {
@@ -16,21 +17,28 @@ export default function AddHabits({showListHabits, setShowListHabits, token}){
 
         const url = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits"
         const body = { name: nameHabit, days: arrayDays }
-        console.log("name"+nameHabit);
-        console.log("days"+arrayDays);
-        console.log("corpo"+body.data);
+
         const config = {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         }
-
+            
         axios.post(url, body, config)
-            .then(() => {navigate("/habitos");
-                        setShowListHabits(true);
-                        console.log("adicionado com sucesso");
-            })
+            .then(() => console.log("adicionado com sucesso"),
+                        setShowList(true),
+                        setShowAddHabits(false),
+                        setShowAddText(false),
+                        navigate("/habitos")
+                        
+                        
+            )
             .catch(err => alert(err.response.data))
+    }
+    
+
+    function closeAddHabits(){
+        setShowAddHabits(false);
     }
 
     return(
@@ -48,7 +56,7 @@ export default function AddHabits({showListHabits, setShowListHabits, token}){
 
                     <DaysSelected arrayDays={arrayDays} setArrayDays={setArrayDays} />
                     <Buttons>
-                        <span>Cancelar</span>
+                        <span onClick={closeAddHabits}>Cancelar</span>
                         <button onClick={createHabits} type='submit'>Salvar</button>
                     </Buttons>
                     </form>

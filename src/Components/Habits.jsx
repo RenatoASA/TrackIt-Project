@@ -5,20 +5,23 @@ import { Link } from "react-router-dom"
 import TopHabitsContent from "./TopHabitsContent"
 import AddHabits from "./AddHabits"
 import BottomContent from "./BottomContent"
-// import HabitsList from "./HabitsList"
+import HabitsList from "./HabitsList"
 import TodayList from "./TodayList"
 import { useEffect, useState } from "react"
 
 import axios from "axios"
 
 
-export default function Habits({token}) {
+export default function Habits({ token }) {
 
     // const [arrayHabits, setArrayHabits] = useState([]);
     const [habitsBtn, setHabitsBtn] = useState(true);
     const [showAddHabits, setShowAddHabits] = useState(false);
     const [showListHabits, setShowListHabits] = useState(false);
     const [listHabits, setListHabits] = useState([]);
+    const [list, setList] = useState([]);
+    const [showList, setShowList] = useState(false);
+    const [showAddText, setShowAddText] = useState(true);
 
     let arrayTodayList = [
         {
@@ -28,32 +31,50 @@ export default function Habits({token}) {
             "currentSequence": 1,
             "highestSequence": 1
         },
-        
-            {
-                "id": 2,
-                "name": "Estudar",
-                "done": false,
-                "currentSequence": 2,
-                "highestSequence": 4
-            }
-        
+
+        {
+            "id": 2,
+            "name": "Estudar",
+            "done": false,
+            "currentSequence": 2,
+            "highestSequence": 4
+        }
+
     ]
 
     useEffect(() => {
         const url = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits"
-            
-            const config = {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
             }
-        
-        
-            axios.get(url, config)
-            .then(res=> setListHabits(res.data))
-            .catch(err=> console.log(err.response.data))
+        }
+
+
+        axios.get(url, config)
+            .then(res => setListHabits(res.data))
+            .catch(err => console.log(err.response.data))
     }, [])
 
+
+    function ToList() {
+
+        const url = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits"
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+
+        axios.get(url, config)
+            .then(res => console.log(res.data))
+            // setToken(res.data.token)
+            // navigate("/habitos")
+
+            .catch(err => console.log(err.response.data))
+    }
     // function createHabits(e) {
 
     //     e.preventDefault()
@@ -66,11 +87,11 @@ export default function Habits({token}) {
     //         .catch(err => alert(err.response.data))
     // }
 
-    if(listHabits===null){
+    if (listHabits === null) {
         return <div>Carregando...</div>
     }
-    function showAdd(){
-            setShowAddHabits(prevState => !prevState)
+    function showAdd() {
+        setShowAddHabits(prevState => !prevState)
     }
 
     return (
@@ -80,31 +101,35 @@ export default function Habits({token}) {
 
                 {habitsBtn && (
                     <>
-                <StyleContent>
-                    <span>Meus Habitos</span>
-                    <button onClick={showAdd}>+</button>
-                </StyleContent>
-                {showAddHabits &&(
-                <AddHabits showListHabits={showListHabits} setShowListHabits={setShowListHabits} token={token}/> 
+                        <StyleContent>
+                            <span>Meus Habitos</span>
+                            <button onClick={showAdd}>+</button>
+                        </StyleContent>
+                        {showAddHabits && (
+                            <AddHabits setShowAddHabits={setShowAddHabits} token={token} setShowList={setShowList} setShowAddText={setShowAddText}/>
+                        )}
+                        {showAddText && (
+                            <StyleText>
+                                <span >Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</span>
+                            </StyleText>
+                        )}
+                    </>
                 )}
-                <StyleText>
-                    <span >Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</span>
-                </StyleText>
-                </>
-                )}
-                {/* <StyleList>
-                {listHabit.map((habit, index) => (                   
-                    <HabitsList key={index} arrayId={habit.id} arrayName={habit.name} arrayDays={habit.days} />
+                {showList && (ToList(
+                <StyleList>
+                    {list.map((habit, index) => (
+                        <HabitsList key={index} arrayId={habit.id} arrayName={habit.name} arrayDays={habit.days} />
                     ))}
-                </StyleList> */}
+                </StyleList>
+                    ))}
                 {!habitsBtn && (
-                <>
-                 <StyleTodayList>
-                {arrayTodayList.map((day, index) => (                   
-                    <TodayList key={index} Id={day.id} name={day.name} done={day.done} currentSequence={day.currentSequence} highestSequence={day.highestSequence} />
-                    ))}
-                </StyleTodayList> 
-                </>
+                    <>
+                        <StyleTodayList>
+                            {arrayTodayList.map((day, index) => (
+                                <TodayList key={index} Id={day.id} name={day.name} done={day.done} currentSequence={day.currentSequence} highestSequence={day.highestSequence} />
+                            ))}
+                        </StyleTodayList>
+                    </>
                 )}
 
                 <BottomContent habitsBtn={habitsBtn} setHabitsBtn={setHabitsBtn} />
