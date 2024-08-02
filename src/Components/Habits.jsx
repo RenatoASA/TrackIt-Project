@@ -17,8 +17,6 @@ export default function Habits({ token }) {
     // const [arrayHabits, setArrayHabits] = useState([]);
     const [habitsBtn, setHabitsBtn] = useState(true);
     const [showAddHabits, setShowAddHabits] = useState(false);
-    const [showListHabits, setShowListHabits] = useState(false);
-    const [listHabits, setListHabits] = useState([]);
     const [list, setList] = useState([]);
     const [showList, setShowList] = useState(false);
     const [showAddText, setShowAddText] = useState(true);
@@ -42,39 +40,74 @@ export default function Habits({ token }) {
 
     ]
 
-    useEffect(() => {
-        const url = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits"
+    // useEffect(() => {
+    //     const url = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits"
 
+    //     const config = {
+    //         headers: {
+    //             Authorization: `Bearer ${token}`
+    //         }
+    //     }
+
+    //     axios.get(url, config)
+    //         .then(res => {setList(res.data)
+    //             console.log("list = " + list.length)
+    //             if(res.data.length>0){
+    //                 setShowList(true),
+    //                 setShowAddHabits(false),
+    //                 setShowAddText(false),
+    //                 console.log("deu certo a requizição")
+    //             }else{
+    //                 console.log("entrou no else"),
+    //                 setShowList(false),
+    //                 setShowAddHabits(false),
+    //                 setShowAddText(true)
+    //             }
+            
+    // })
+    //         // setToken(res.data.token)
+    //         // navigate("/habitos")
+
+    //         .catch(err => console.log(err.response.data))
+    
+    //     },    
+    // [])
+
+    const fetchHabits = () => {
+        const url = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits"
         const config = {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         }
 
-
         axios.get(url, config)
-            .then(res => setListHabits(res.data))
+            .then(res => {
+                setList(res.data)
+                if (res.data.length > 0) {
+                    setShowList(true)
+                    setShowAddHabits(false)
+                    setShowAddText(false)
+                } else {
+                    setShowList(false)
+                    setShowAddHabits(false)
+                    setShowAddText(true)
+                }
+            })
             .catch(err => console.log(err.response.data))
+    }
+
+    useEffect(() => {
+        fetchHabits()
     }, [])
 
 
-    function ToList() {
-
-        const url = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits"
-
-        const config = {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        }
-
-        axios.get(url, config)
-            .then(res => console.log(res.data))
-            // setToken(res.data.token)
-            // navigate("/habitos")
-
-            .catch(err => console.log(err.response.data))
+    if ( list=== null) {
+        return <div>Carregando...</div>
     }
+
+
+        
     // function createHabits(e) {
 
     //     e.preventDefault()
@@ -87,9 +120,7 @@ export default function Habits({ token }) {
     //         .catch(err => alert(err.response.data))
     // }
 
-    if (listHabits === null) {
-        return <div>Carregando...</div>
-    }
+  
     function showAdd() {
         setShowAddHabits(prevState => !prevState)
     }
@@ -106,22 +137,26 @@ export default function Habits({ token }) {
                             <button onClick={showAdd}>+</button>
                         </StyleContent>
                         {showAddHabits && (
-                            <AddHabits setShowAddHabits={setShowAddHabits} token={token} setShowList={setShowList} setShowAddText={setShowAddText}/>
+                            <AddHabits setShowAddHabits={setShowAddHabits} token={token} setShowList={setShowList} setShowAddText={setShowAddText}  fetchHabits={fetchHabits} />
+                            
                         )}
                         {showAddText && (
                             <StyleText>
                                 <span >Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</span>
                             </StyleText>
                         )}
+
+
+                        
+                        {showList && (
+                            <StyleList>
+                                {list.map((habit, index) => (
+                                    <HabitsList key={index} arrayId={habit.id} arrayName={habit.name} arrayDays={habit.days} />
+                                ))}
+                            </StyleList>
+                        )}
                     </>
                 )}
-                {showList && (ToList(
-                <StyleList>
-                    {list.map((habit, index) => (
-                        <HabitsList key={index} arrayId={habit.id} arrayName={habit.name} arrayDays={habit.days} />
-                    ))}
-                </StyleList>
-                    ))}
                 {!habitsBtn && (
                     <>
                         <StyleTodayList>
@@ -145,10 +180,12 @@ export default function Habits({ token }) {
 const StyleHabitsContent = styled.div`
     display: flex;
     flex-wrap: wrap;
-    height: 100%;
+    margin-top: 136px;
+    height: 485px;
     width: 100%;
     flex-direction: column;
     background-color: #d5d2d2;
+    overflow-y: auto;
 
 `
 
@@ -164,13 +201,16 @@ span{
 `
 
 const StyleContent = styled.div`
-    margin-top: 15px;
+    top: 80px;
+    
     margin-bottom: 15px;
     width: 375px;
+    height: 65px;
     background-color: #d5d2d2;
     display:flex;
     align-items: center;
     justify-content: space-between;
+    position: fixed;
 button{
     margin-right: 20px;
     margin-top: 10px;
@@ -193,6 +233,13 @@ span{
 
 
 const StyleList = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    
+    
 `
 const StyleTodayList = styled.div`
 `

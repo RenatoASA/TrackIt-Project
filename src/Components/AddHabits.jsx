@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from 'react-router-dom';
 
-export default function AddHabits({ setShowAddHabits, token, setShowList, setShowAddText}){
+export default function AddHabits({ setShowAddHabits, token, setShowList, setShowAddText, fetchHabits}){
 
     const [nameHabit, setNameHabit] = useState("");
     const [arrayDays, setArrayDays] = useState([]);
@@ -29,6 +29,7 @@ export default function AddHabits({ setShowAddHabits, token, setShowList, setSho
                         setShowList(true),
                         setShowAddHabits(false),
                         setShowAddText(false),
+                        fetchHabits(),
                         navigate("/habitos")
                         
                         

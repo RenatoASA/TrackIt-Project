@@ -13,13 +13,15 @@ export default function TopContent(){
 }
 
 const StyleTopContent = styled.div`
-    margin-top: 0px;
+    
     height: 70px;
     width: 375px;
     background-color: #126BA5;
     display:flex;
     align-items: center;
     justify-content: space-between;
+    position: fixed;
+    top: 8px;
 img{
     margin-left: 20px;
     width: 100px;
