@@ -1,24 +1,60 @@
 import styled from "styled-components";
-import React from "react";
+import React, { useContext } from "react";
 import CheckIcon from '@mui/icons-material/Check';
+import axios from "axios";
+import AuthContext from "../contexts/AuthContext";
 // import { useState } from "react";
 
-export default function TodayList({ name, done, currentSequence, highestSequence }) {
+export default function TodayList({ id, name, done, currentSequence, highestSequence, fetchHabitsToday}) {
     
-    // const [selectedDays, setSelectedDays] = useState(arrayDays);
+    
+    const {token} = useContext(AuthContext)
 
-    // const DaysSelectedButton = (value, index) => {
-    //     let newArray = [...selectedDays];
+    function checkToday(){
+        if(done===false){
+            checkTodayHabit()
+            
+        }else{
+            uncheckTodayHabit()
+            
+        }
+    }
+    
+    function checkTodayHabit() {        
 
-    //     if (newArray.includes(index)) {
-    //         newArray = newArray.filter(day => day !== index);
-    //     } else {
-    //         newArray.push(index);
-    //     }
+        const url = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/check`
+        const body = []
 
-    //     setSelectedDays(newArray);
-    //     setArrayDays(newArray); // Atualiza o estado no pai
-    // }
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+            
+        axios.post(url, body, config)
+            .then(() => fetchHabitsToday()                   
+                        
+            )
+            .catch(err => alert(err.response.data))
+    }
+
+    function uncheckTodayHabit() {
+
+        const url = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/uncheck`
+        const body = []
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+            
+        axios.post(url, body, config)
+            .then(() => fetchHabitsToday()                    
+                        
+            )
+            .catch(err => alert(err.response.data))
+    }
 
     return (
         <StyledContent>
@@ -38,7 +74,7 @@ export default function TodayList({ name, done, currentSequence, highestSequence
             
         </StyleText>
         <StyleDone>
-            <button style={{backgroundColor: done ===true ? '#8FC549':'#E7E7E7'}}><CheckIcon style={{ fontSize: '3rem', color:'#ffffff'}} /></button>
+            <button onClick={checkToday} style={{backgroundColor: done ===true ? '#8FC549':'#E7E7E7'}}><CheckIcon style={{ fontSize: '3rem', color:'#ffffff'}} /></button>
         </StyleDone>
             
        

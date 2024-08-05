@@ -1,14 +1,20 @@
 import imgMain from '../assets/imgMain.png'
 import styled from 'styled-components'
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import axios from 'axios';
+import UserContext from '../contexts/UseContext';
+import AuthContext from '../contexts/AuthContext';
 
-export default function Login({setToken}) {
+
+export default function Login() {
 
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const navigate = useNavigate()
+    const {setUser} = useContext(UserContext)
+    const {setToken, setImg} = useContext(AuthContext)
+
 
     function sendLogin(e){
         e.preventDefault()
@@ -18,6 +24,11 @@ export default function Login({setToken}) {
     axios.post(url, body)
         .then(res =>{
             setToken(res.data.token)
+            localStorage.setItem("token", res.data.token)
+            setImg(res.data.image)
+            console.log(res.data.image)
+
+            // setImage(res.data.image)
             navigate("/habitos")
         })
         .catch(err => console.log(err.response.data))

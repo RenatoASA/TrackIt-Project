@@ -1,12 +1,22 @@
 import imgText from "../assets/imgText.png"
 import styled from "styled-components"
 
-export default function TopContent(){
+import { useContext } from "react";
+import AuthContext from "../contexts/AuthContext";
+
+export default function TopHabitsContent(){
+
+    const {img} = useContext(AuthContext);
+    console.log("img no TopHabits"+ img);
+   
+
     return(
         <StyleTopContent>
-                <img src={imgText}></img>
+                <StyleLogo>
+                    <img src={imgText}></img>
+                </StyleLogo>
                 <StyleImgPerfil>
-                   <img src="https://img.olhardigital.com.br/wp-content/uploads/2020/12/jair_bolsonaro_solenidade_de_acao_de_gracas_mcamgo_16122000792.jpg"></img>
+                   <img src={img}></img>
                 </StyleImgPerfil>
         </StyleTopContent>
     )
@@ -14,7 +24,7 @@ export default function TopContent(){
 
 const StyleTopContent = styled.div`
     
-    height: 70px;
+    height: 78px;
     width: 375px;
     background-color: #126BA5;
     display:flex;
@@ -22,12 +32,17 @@ const StyleTopContent = styled.div`
     justify-content: space-between;
     position: fixed;
     top: 8px;
+
+`
+
+const StyleLogo = styled.div`
 img{
     margin-left: 20px;
     width: 100px;
     height: 52 px;
 }
 `
+
 const StyleImgPerfil = styled.div`
     img{
         width: 51px;

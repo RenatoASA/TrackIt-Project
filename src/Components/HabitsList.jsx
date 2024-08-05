@@ -14,7 +14,7 @@ export default function HabitsList({ arrayName, arrayDays }) {
     //     } else {
     //         newArray.push(index);
     //     }
-
+   
     //     setSelectedDays(newArray);
     //     setArrayDays(newArray); // Atualiza o estado no pai
     // }

@@ -5,26 +5,31 @@ import Login from "./Login"
 import Habits from "./Habits"
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import { useState } from "react"
+import UserContext from "../contexts/UseContext"
+import AuthContext from "../contexts/AuthContext"
 
 export default function Container() {
 
-    const [token, setToken] = useState("")
+    const [token, setToken] = useState(localStorage.getItem("token"))
+    const [user, setUser] = useState({})
+    const [img, setImg] = useState("")
+    // const [image, setImage] = useState("")
 
     return (
-        <BrowserRouter>
-            <StyleContainer>
-                {/* <TopContent /> */}
-                <Routes>
-                    <Route path="/" element={<Login setToken={setToken}/>}/>
-                    <Route path="/cadastro" element={<Register />} />
-                    <Route path="/habitos" element={<Habits token={token}/>} />
-                    {/* <Route path="/assentos/:idSessao" element={<Seats />} />
-                    <Route path="/sucesso" element={<Success />} /> */}
-                </Routes>
-
-
-            </StyleContainer>
-        </BrowserRouter>
+        <AuthContext.Provider value={{ token, setToken, setImg, img}}>
+            <UserContext.Provider value={{ user, setUser }}>
+                <BrowserRouter>
+                    <StyleContainer>
+                        {/* <TopContent /> */}
+                        <Routes>
+                            <Route path="/" element={<Login />} />
+                            <Route path="/cadastro" element={<Register />} />
+                            <Route path="/habitos" element={<Habits />} />
+                        </Routes>
+                    </StyleContainer>
+                </BrowserRouter>
+            </UserContext.Provider>
+        </AuthContext.Provider>
     )
 }
 

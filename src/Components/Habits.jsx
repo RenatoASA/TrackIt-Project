@@ -7,72 +7,50 @@ import AddHabits from "./AddHabits"
 import BottomContent from "./BottomContent"
 import HabitsList from "./HabitsList"
 import TodayList from "./TodayList"
-import { useEffect, useState } from "react"
-
+import { useContext, useEffect, useState } from "react"
 import axios from "axios"
+import { useNavigate } from "react-router-dom"
+import AuthContext from "../contexts/AuthContext"
+
+import dayjs from "dayjs";
+import weekday from "dayjs/plugin/weekday";
+import localeData from "dayjs/plugin/localeData";
+import updateLocale from "dayjs/plugin/updateLocale";
+import advancedFormat from "dayjs/plugin/advancedFormat";
+import "dayjs/locale/pt-br"; 
 
 
-export default function Habits({ token }) {
+dayjs.extend(weekday);
+dayjs.extend(localeData);
+dayjs.extend(updateLocale);
+dayjs.extend(advancedFormat);
+
+
+dayjs.updateLocale('pt-br', {
+    weekdays: ["domingo", "segunda", "terça", "quarta", "quinta", "sexta", "sábado"]
+});
+
+
+
+
+export default function Habits() {
 
     // const [arrayHabits, setArrayHabits] = useState([]);
     const [habitsBtn, setHabitsBtn] = useState(true);
+    const [arrayDays, setArrayDays] = useState([]);
     const [showAddHabits, setShowAddHabits] = useState(false);
     const [list, setList] = useState([]);
     const [showList, setShowList] = useState(false);
     const [showAddText, setShowAddText] = useState(true);
+    const [todayList, setTodayList] = useState([])
+    const navigate = useNavigate();
+    const {token} = useContext(AuthContext)
 
-    let arrayTodayList = [
-        {
-            "id": 3,
-            "name": "Acordar",
-            "done": true,
-            "currentSequence": 1,
-            "highestSequence": 1
-        },
-
-        {
-            "id": 2,
-            "name": "Estudar",
-            "done": false,
-            "currentSequence": 2,
-            "highestSequence": 4
+    useEffect(()=> {
+        if(!token){
+            navigate("/")
         }
-
-    ]
-
-    // useEffect(() => {
-    //     const url = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits"
-
-    //     const config = {
-    //         headers: {
-    //             Authorization: `Bearer ${token}`
-    //         }
-    //     }
-
-    //     axios.get(url, config)
-    //         .then(res => {setList(res.data)
-    //             console.log("list = " + list.length)
-    //             if(res.data.length>0){
-    //                 setShowList(true),
-    //                 setShowAddHabits(false),
-    //                 setShowAddText(false),
-    //                 console.log("deu certo a requizição")
-    //             }else{
-    //                 console.log("entrou no else"),
-    //                 setShowList(false),
-    //                 setShowAddHabits(false),
-    //                 setShowAddText(true)
-    //             }
-            
-    // })
-    //         // setToken(res.data.token)
-    //         // navigate("/habitos")
-
-    //         .catch(err => console.log(err.response.data))
-    
-    //     },    
-    // [])
-
+    },[])
     const fetchHabits = () => {
         const url = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits"
         const config = {
@@ -97,8 +75,27 @@ export default function Habits({ token }) {
             .catch(err => console.log(err.response.data))
     }
 
+
+    
+    const fetchHabitsToday = () => {
+        const url = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today"
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+
+        axios.get(url, config)
+            .then(res => {
+                setTodayList(res.data)
+                console.log("today list: "+ res.data)
+            })
+            .catch(err => console.log(err.response.data))
+    }
+
     useEffect(() => {
         fetchHabits()
+        fetchHabitsToday()
     }, [])
 
 
@@ -106,20 +103,7 @@ export default function Habits({ token }) {
         return <div>Carregando...</div>
     }
 
-
-        
-    // function createHabits(e) {
-
-    //     e.preventDefault()
-
-    //     const url = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits"
-    //     const body = { name: nameHabit, days: arrayDays }
-
-    //     axios.post(url, body)
-    //         .then(() => navigate("/"))
-    //         .catch(err => alert(err.response.data))
-    // }
-
+    const formattedDate = dayjs().locale('pt-br').format('dddd, DD/MM');
   
     function showAdd() {
         setShowAddHabits(prevState => !prevState)
@@ -137,7 +121,7 @@ export default function Habits({ token }) {
                             <button onClick={showAdd}>+</button>
                         </StyleContent>
                         {showAddHabits && (
-                            <AddHabits setShowAddHabits={setShowAddHabits} token={token} setShowList={setShowList} setShowAddText={setShowAddText}  fetchHabits={fetchHabits} />
+                            <AddHabits setShowAddHabits={setShowAddHabits} setShowList={setShowList} setShowAddText={setShowAddText}  fetchHabits={fetchHabits} />
                             
                         )}
                         {showAddText && (
@@ -159,15 +143,18 @@ export default function Habits({ token }) {
                 )}
                 {!habitsBtn && (
                     <>
+                        <StyleContent>
+                            <span>{formattedDate}</span>
+                        </StyleContent>
                         <StyleTodayList>
-                            {arrayTodayList.map((day, index) => (
-                                <TodayList key={index} Id={day.id} name={day.name} done={day.done} currentSequence={day.currentSequence} highestSequence={day.highestSequence} />
+                            {todayList.map((day, index) => (
+                                <TodayList key={index} id={day.id} name={day.name} done={day.done} currentSequence={day.currentSequence} highestSequence={day.highestSequence} fetchHabitsToday={fetchHabitsToday} />
                             ))}
                         </StyleTodayList>
                     </>
                 )}
 
-                <BottomContent habitsBtn={habitsBtn} setHabitsBtn={setHabitsBtn} />
+                <BottomContent habitsBtn={habitsBtn} setHabitsBtn={setHabitsBtn} fetchHabitsToday={fetchHabitsToday}/>
 
 
 
@@ -224,7 +211,7 @@ button{
 }
 span{
     background-color: #d5d2d2;
-    margin-left: 15px;
+    margin-left: 20px;
     font-size: 23px;
     color: #126BA5;
     font-family: 'Lexend Deca', sans-serif;

@@ -5,10 +5,11 @@ import styled from "styled-components"
 
 
 
-export default function BottomContent({habitsBtn, setHabitsBtn}){
+export default function BottomContent({habitsBtn, setHabitsBtn, fetchHabitsToday }){
     
     function clickHabits(status){
-        setHabitsBtn(status);
+        setHabitsBtn(status),
+        fetchHabitsToday()
 
     }
 

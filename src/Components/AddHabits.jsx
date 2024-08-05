@@ -1,14 +1,17 @@
 import DaysSelected from "./DaysSelected"
 import styled from "styled-components"
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { Link, useNavigate } from 'react-router-dom';
+import UserContext from "../contexts/UseContext";
+import AuthContext from "../contexts/AuthContext";
 
-export default function AddHabits({ setShowAddHabits, token, setShowList, setShowAddText, fetchHabits}){
+export default function AddHabits({ setShowAddHabits, setShowList, setShowAddText, fetchHabits}){
 
     const [nameHabit, setNameHabit] = useState("");
     const [arrayDays, setArrayDays] = useState([]);
     const navigate = useNavigate();
+    const {token} = useContext(AuthContext)
 
 
     function createHabits(e) {
@@ -26,12 +29,10 @@ export default function AddHabits({ setShowAddHabits, token, setShowList, setSho
             
         axios.post(url, body, config)
             .then(() => console.log("adicionado com sucesso"),
+                        fetchHabits(),
                         setShowList(true),
                         setShowAddHabits(false),
-                        setShowAddText(false),
-                        fetchHabits(),
-                        navigate("/habitos")
-                        
+                        setShowAddText(false)                        
                         
             )
             .catch(err => alert(err.response.data))
