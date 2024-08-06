@@ -36,7 +36,7 @@ dayjs.updateLocale('pt-br', {
 export default function Habits() {
 
     // const [arrayHabits, setArrayHabits] = useState([]);
-    const [habitsBtn, setHabitsBtn] = useState(true);
+    const [habitsBtn, setHabitsBtn] = useState(false);
     const [arrayDays, setArrayDays] = useState([]);
     const [showAddHabits, setShowAddHabits] = useState(false);
     const [list, setList] = useState([]);

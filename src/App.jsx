@@ -19,7 +19,7 @@ const StyleMain = styled.main`
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: "Righteous", sans-serif;
+    font-family: "Lexend Deca", sans-serif;
     background-color: #676767;
 
 ` 

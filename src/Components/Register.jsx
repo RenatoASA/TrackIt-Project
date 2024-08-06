@@ -3,6 +3,8 @@ import styled from 'styled-components'
 import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import axios from "axios"
+import { ThreeDots } from 'react-loader-spinner';
+
 
 export default function Register() {
 
@@ -11,17 +13,28 @@ export default function Register() {
     const [name, setName] = useState("")
     const [image, setImage] = useState("")
     const navigate = useNavigate()
+    const [loading, setLoading] = useState(false)
 
     function createAccount(e){
         
         e.preventDefault()
 
+        setLoading(true)
+
         const url = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up"
         const body = {email, name, image, password}
 
         axios.post(url, body)
-        .then(()=> navigate("/"))
-        .catch(err=> alert(err.response.data))
+        .then(()=>{ 
+            navigate("/")
+            setLoading(false)
+        })
+        .catch(err=> {
+           
+            console.log(err.response.data)
+            setLoading(false)
+            alert(err.response.data.message)
+        })
     }
 
     return (
@@ -39,6 +52,7 @@ export default function Register() {
                         onChange={(e) => setEmail(e.target.value)}
                         required
                         placeholder='e-mail'
+                        disabled={loading}
                     />
                 </StyleInputEmail>
                 <StyleInputPassword>
@@ -49,6 +63,7 @@ export default function Register() {
                         onChange={(e) => setPassword(e.target.value)}
                         required
                         placeholder='senha'
+                        disabled={loading}
                     />
                 </StyleInputPassword>
                 <StyleInputName>
@@ -59,6 +74,7 @@ export default function Register() {
                         onChange={(e) => setName(e.target.value)}
                         required
                         placeholder='nome'
+                        disabled={loading}
                     />
                 </StyleInputName>
                 <StyleInputImage>
@@ -69,10 +85,20 @@ export default function Register() {
                         onChange={(e) => setImage(e.target.value)}
                         required
                         placeholder='imagem'
+                        disabled={loading}
                     />
                 </StyleInputImage>
                 <StyleButtonLogin>
-                    <button type='submit'>Cadastrar</button>
+                    <button type='submit' style={{ backgroundColor: !loading ? '#52B6FF' : '#b9ddf7'}}>{!loading ? "Cadastrar" : <ThreeDots
+  visible={true}
+  height="51"
+  width="51"
+  color="#ffffff"
+  radius="9"
+  ariaLabel="three-dots-loading"
+  wrapperStyle={{}}
+  wrapperClass=""
+  />}</button>
                 </StyleButtonLogin>
                 <StyleText to={`/`} >
                     <span >Já tem uma conta? Faça login!</span>
@@ -174,7 +200,6 @@ const StyleButtonLogin = styled.div`
     button{
         margin-top: 5px;
         margin-left: 28px;
-        background-color: #52B6FF;
         color: #ffffff;
         display: flex;
         align-items: center;

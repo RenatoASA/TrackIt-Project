@@ -5,6 +5,7 @@ import { useContext, useState } from 'react';
 import axios from 'axios';
 import UserContext from '../contexts/UseContext';
 import AuthContext from '../contexts/AuthContext';
+import { ThreeDots } from 'react-loader-spinner';
 
 
 export default function Login() {
@@ -14,24 +15,33 @@ export default function Login() {
     const navigate = useNavigate()
     const {setUser} = useContext(UserContext)
     const {setToken, setImg} = useContext(AuthContext)
-
+    const [loading, setLoading] = useState(false)
 
     function sendLogin(e){
         e.preventDefault()
+        setLoading(true)
         const url = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login"
         const body = {email, password}
+
+
     
     axios.post(url, body)
         .then(res =>{
             setToken(res.data.token)
             localStorage.setItem("token", res.data.token)
             setImg(res.data.image)
+            setLoading(false)
             console.log(res.data.image)
 
-            // setImage(res.data.image)
+          
             navigate("/habitos")
         })
-        .catch(err => console.log(err.response.data))
+        .catch(err => {console.log(err.response.data)
+            
+                       setLoading(false)
+                       alert(err.response.data.message)
+         })
+                
 }
 
 
@@ -50,6 +60,7 @@ export default function Login() {
                         onChange={(e) => setEmail(e.target.value)}
                         required
                         placeholder='e-mail'
+                        disabled={loading}
                     />
                 </StyleInputEmail>
                 <StyleInputPassword>
@@ -60,10 +71,21 @@ export default function Login() {
                         onChange={(e) => setPassword(e.target.value)}
                         required
                         placeholder='senha'
+                        disabled={loading}
                     />
                 </StyleInputPassword>
                 <StyleButtonLogin>
-                    <button>Entrar</button>
+                <button style={{ backgroundColor: !loading ? '#52B6FF' : '#b9ddf7'}}>{!loading ? "Entrar" : <ThreeDots
+  visible={true}
+  height="51"
+  width="51"
+  color="#ffffff"
+  radius="9"
+  ariaLabel="three-dots-loading"
+  wrapperStyle={{}}
+  wrapperClass=""
+  />}</button>
+                    {/* <button></button> */}
                 </StyleButtonLogin>
                 <StyleText to={`/cadastro`}>
                     <span >Não tem uma conta? Cadastre-se!</span>
@@ -131,7 +153,6 @@ const StyleButtonLogin = styled.div`
     button{
         margin-top: 5px;
         margin-left: 28px;
-        background-color: #52B6FF;
         color: #ffffff;
         display: flex;
         align-items: center;
