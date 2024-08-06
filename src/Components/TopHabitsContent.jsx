@@ -7,7 +7,6 @@ import AuthContext from "../contexts/AuthContext";
 export default function TopHabitsContent(){
 
     const {img} = useContext(AuthContext);
-    console.log("img no TopHabits"+ img);
    
 
     return(

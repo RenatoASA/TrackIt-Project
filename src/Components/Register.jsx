@@ -30,8 +30,6 @@ export default function Register() {
             setLoading(false)
         })
         .catch(err=> {
-           
-            console.log(err.response.data)
             setLoading(false)
             alert(err.response.data.message)
         })

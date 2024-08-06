@@ -1,24 +1,9 @@
 import styled from "styled-components";
 import React from "react";
-// import { useState } from "react";
+
 
 export default function HabitsList({ arrayName, arrayDays }) {
     
-    // const [selectedDays, setSelectedDays] = useState(arrayDays);
-
-    // const DaysSelectedButton = (value, index) => {
-    //     let newArray = [...selectedDays];
-
-    //     if (newArray.includes(index)) {
-    //         newArray = newArray.filter(day => day !== index);
-    //     } else {
-    //         newArray.push(index);
-    //     }
-   
-    //     setSelectedDays(newArray);
-    //     setArrayDays(newArray); // Atualiza o estado no pai
-    // }
-
     return (
         <StyledContent>
         <StyleName>

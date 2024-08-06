@@ -13,14 +13,13 @@ export default function Container() {
     const [token, setToken] = useState(localStorage.getItem("token"))
     const [user, setUser] = useState({})
     const [img, setImg] = useState("")
-    // const [image, setImage] = useState("")
+   
 
     return (
         <AuthContext.Provider value={{ token, setToken, setImg, img}}>
             <UserContext.Provider value={{ user, setUser }}>
                 <BrowserRouter>
                     <StyleContainer>
-                        {/* <TopContent /> */}
                         <Routes>
                             <Route path="/" element={<Login />} />
                             <Route path="/cadastro" element={<Register />} />

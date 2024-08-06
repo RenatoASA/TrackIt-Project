@@ -1,7 +1,6 @@
 
 import imgText from "../assets/imgText.png"
 import styled from "styled-components"
-import { Link } from "react-router-dom"
 import TopHabitsContent from "./TopHabitsContent"
 import AddHabits from "./AddHabits"
 import BottomContent from "./BottomContent"
@@ -35,9 +34,8 @@ dayjs.updateLocale('pt-br', {
 
 export default function Habits() {
 
-    // const [arrayHabits, setArrayHabits] = useState([]);
-    const [habitsBtn, setHabitsBtn] = useState(false);
-    const [arrayDays, setArrayDays] = useState([]);
+
+    const [habitsBtn, setHabitsBtn] = useState();
     const [showAddHabits, setShowAddHabits] = useState(false);
     const [list, setList] = useState([]);
     const [showList, setShowList] = useState(false);
@@ -51,6 +49,15 @@ export default function Habits() {
             navigate("/")
         }
     },[])
+
+    useEffect(()=> {
+        if(todayList!=0){
+            setHabitsBtn(false)
+        }else{
+            setHabitsBtn(true)
+        }
+    },[])
+
     const fetchHabits = () => {
         const url = "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits"
         const config = {
@@ -88,7 +95,6 @@ export default function Habits() {
         axios.get(url, config)
             .then(res => {
                 setTodayList(res.data)
-                console.log("today list: "+ res.data)
             })
             .catch(err => console.log(err.response.data))
     }

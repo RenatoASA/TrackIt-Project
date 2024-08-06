@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import CheckIcon from '@mui/icons-material/Check';
 import axios from "axios";
 import AuthContext from "../contexts/AuthContext";
-// import { useState } from "react";
+
 
 export default function TodayList({ id, name, done, currentSequence, highestSequence, fetchHabitsToday}) {
     
